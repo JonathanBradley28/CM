@@ -154,7 +154,7 @@ lines(1:m,lambda_lower,col="blue")
 lines(1:m,lambda_upper,col="blue")
 
 ########################
-#To access examples for Binomial, Bernoulli, and Multinomial data, copy and past from the help files
+#To access examples for Binomial, Bernoulli, and Multinomial data, copy and paste from the help files
 
 help(GibbsBinomialMLB)
 
