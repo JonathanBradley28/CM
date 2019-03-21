@@ -12,9 +12,9 @@ library(CM)
 
 #To access these examples, run the following commands
 
-help(GibbsBernoulliMLB)
-
 help(GibbsBinomialMLB)
+
+help(GibbsBernoulliMLB)
 
 help(GibbsMultinomialMLB)
 
