@@ -2,16 +2,20 @@
 
 library(devtools)
 
+#the author token will be removed once the repository  goes public.
+
 install_github("JonathanBradley28/CM",auth_token="7fcfcc652f9d3b1441a8050c13d44f50abb65eaa")
+
+library(CM)
 
 #The help file contains simulation examples.
 
 #To access these examples, run the following commands
 
-??GibbsBernoulliMLB
+help(GibbsBernoulliMLB)
 
-??GibbsBinomialMLB
+help(GibbsBinomialMLB)
 
-??GibbsMultinomialMLB
+help(GibbsMultinomialMLB)
 
-??GibbsPoissonMLB
+help(GibbsPoissonMLB)
