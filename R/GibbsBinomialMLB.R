@@ -12,7 +12,7 @@
 #' @param cs A three dimensional parameter vector to allow prior to have non-zero means.
 #' @param nslice The burnin for the slice sampler
 #' @param select.h Option to select pseudo-optimal values for rho and eps. The MCMC is run for only 50 iterations, and the corresponding predictions are compared to a holdout datasets. The values of rho and eps are chosen to minimize the Hellinger distance between the holdout and the naive predictions using the function optim.
-#' @import actuar MfUSampler stats devtools roxygen2 coda MASS
+#' @import actuar MfUSampler stats coda MASS
 #' @return beta A pxB matrix of MCMC values for beta. The vector beta corresponds to the covariates X.
 #' @return eta A rxB matrix of MCMC values for eta. The vector eta corresponds to the basis functions G.
 #' @return xi A nxB matrix of MCMC values for xi. The vector xi corresponds to uncorrelated random effects.

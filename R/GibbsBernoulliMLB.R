@@ -8,7 +8,7 @@
 #' @param itmax The values of rho and eps in "GibbsBinomialMLB" are chosen to minimize the Hellinger distance between the data and the estimated proportion. itmax defines the maximum number of iterations in "optim" to obtain these values for rho and eps.
 #' @param report Option to print the iteration number of the MCMC.
 #' @param nslice The burnin for the slice sampler
-#' @import actuar MfUSampler stats devtools roxygen2 coda MASS
+#' @import actuar MfUSampler stats coda MASS
 #' @return beta A pxB matrix of MCMC values for beta. The vector beta corresponds to the covariates X.
 #' @return eta A rxB matrix of MCMC values for eta. The vector eta corresponds to the basis functions G.
 #' @return xi A nxB matrix of MCMC values for xi. The vector xi corresponds to uncorrelated random effects.

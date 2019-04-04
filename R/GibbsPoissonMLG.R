@@ -9,7 +9,7 @@
 #' @param printevery Option to print the iteration number of the MCMC.
 #' @param updatekappa Updating kappa is not needed if X contains an intercept. The default is FALSE.
 #' @param jointupdate Block update beta and eta together. Default is TRUE.
-#' @import actuar MfUSampler stats devtools roxygen2 coda MASS
+#' @import actuar MfUSampler stats coda MASS
 #' @return betas A pxNiter matrix of MCMC values for beta. The vector beta corresponds to the covariates X.
 #' @return etas A rxNiter matrix of MCMC values for eta. The vector eta corresponds to the basis functions G.
 #' @return deltas A nxNiter matrix of MCMC values for delta. The vector delta corresponds to uncorrelated random effects.
