@@ -1,4 +1,4 @@
-#install.packages("devtools") #install devtools from CRAN
+#install.packages("devtools",dependencies=TRUE) #install devtools from CRAN
 
 #library(devtools) #load devtools
 
