@@ -17,7 +17,7 @@ set.seed(123)
 
 #A non-linear test function
 
-lambda <- function(t) exp(1.1 + sin(2*pi*t))
+lambda <- function(t) exp(1.1 + sin(2 &ast; pi &ast; t))
 
 
 
