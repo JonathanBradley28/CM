@@ -8,7 +8,7 @@
 #' @param X An nxp matrix of covariates. Each column represents a covariate. Each row corresponds to one of the n replicates.
 #' @param Psi An nxr matrix of basis functions. Each column represents a basis function. Each row corresponds to one of the n replicates.
 #' @param nslice The burnin for the slice sampler
-#' @import actuar MfUSampler stats devtools roxygen2 coda MASS
+#' @import actuar MfUSampler stats coda MASS
 #' @return beta A pxB matrix of MCMC values for beta. The vector beta corresponds to the covariates X.
 #' @return eta A rxB matrix of MCMC values for eta. The vector eta corresponds to the basis functions G.
 #' @return xi A nxB matrix of MCMC values for xi. The vector xi corresponds to uncorrelated random effects.
