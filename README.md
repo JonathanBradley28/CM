@@ -1,5 +1,7 @@
 #install.packages("devtools") #install devtools from CRAN
+
 #library(devtools) #load devtools
+
 #install_github("hadley/devtools")#install devtools from Github
 
 library(devtools)
