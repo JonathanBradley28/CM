@@ -1,4 +1,4 @@
-#install.packages("devtools") #uncomment this line if you have not installed "devtools"
+#install_github("hadley/devtools") #uncomment this line if you have not installed "devtools"
 
 library(devtools)
 
