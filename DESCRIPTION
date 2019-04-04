@@ -7,6 +7,6 @@ Maintainer: Jonathan R. Bradley <jrbradley@fsu.edu>
 Description: This package provides functionality to implement latent conjugate multivariate models for non-Gaussian data.
 License: GPL-3
 LazyData: TRUE
-Depends: actuar,MfUSampler,stats,devtools,roxygen2,coda,MASS
+Depends: actuar,MfUSampler,stats,coda,MASS
 Encoding: UTF-8
 RoxygenNote: 6.1.1
