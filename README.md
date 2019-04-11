@@ -168,4 +168,4 @@ help(GibbsBernoulliMLB)
 
 help(GibbsMultinomialMLB)
 
-help(GibbsPoissonMLB)
+help(GibbsPoissonMLG)
