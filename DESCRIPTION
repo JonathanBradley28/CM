@@ -10,3 +10,4 @@ LazyData: TRUE
 Depends: actuar,MfUSampler,stats,coda,MASS
 Encoding: UTF-8
 RoxygenNote: 6.1.1
+NeedsCompilation: no
