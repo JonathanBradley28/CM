@@ -42,12 +42,12 @@
 #' plot(mu)
 #'
 #' #small scale parameters
-#' eta = sqrt(var(X%*%beta)/2)*rnorm(r)
+#' eta = as.numeric(sqrt(var(X%*%beta)/2))*rnorm(r)
 #' rand.effects = Psi%*%eta
 #' plot(rand.effects)
 #'
 #' #fine scale parameters
-#' xi = sqrt(var(Psi%*%eta)/2)*rnorm(n)
+#' xi = as.numeric(sqrt(var(Psi%*%eta)/2))*rnorm(n)
 #'
 #' #simulate multinomial data with 5 categories
 #' nu = mu+rand.effects+xi

@@ -71,8 +71,8 @@
 #' plot(data)
 #'
 #' #number of MCMC reps
-#' B = 2000
-#' burnin=1000
+#' B = 5000
+#' burnin=2000
 #'
 #' #Pseudo-Code 2 with updates for shape parameters
 #' output<-GibbsBinomialMLB(B,data,m,X,Psi)

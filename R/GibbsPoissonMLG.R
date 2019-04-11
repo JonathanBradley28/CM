@@ -77,6 +77,7 @@
 #' plot(as.mcmc(output$etas[8,1000:2000]))
 #' plot(as.mcmc(output$deltas[10,1000:2000]))
 #' plot(as.mcmc(output$alpha_eta[1,1000:2000]))
+#' #alpha_delta does not mix well, one could thin, however, we choose not to. See MacEachern and Berliner (1994) for a discussion on thinning.
 #' plot(as.mcmc(output$alpha_delta[1,1000:2000]))
 #'
 #' #estimates (remove a burnin)
