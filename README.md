@@ -11,7 +11,7 @@ install_github("JonathanBradley28/CM")
 library(CM)
 
 ###################
-#The help file contains simulation examples. For example, if you type help(GibbsPoisson) or ??GibbsPoisson, the help file will contain the following code
+#The help file contains simulation examples. For example, if you type help(GibbsPoissonMLG) or ??GibbsPoissonMLG, the help file will contain the following code
 
 set.seed(123)
 
