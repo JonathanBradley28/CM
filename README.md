@@ -9,9 +9,9 @@ Bradley, JR, Holan, SH, and Wikle, CK. (2019). Bayesian Hierarchical Models with
 
 Bradley, JR, Wikle, CK, and Holan, SH. (2019). Spatio-Temporal Models for Big Multinomial Data using the Conditional Multivariate Logit-Beta Distribution. *Journal of Time Series Analysis.* 40: 363 - 382.
 
-Hu, G, Bradley, JR. (2018). A Bayesian Spatio-Temporal Model for Analyzing Earthquake Magnitudes. *Stat.* 7(1): e179.
-
 Bradley, JR, Holan, SH, and Wikle, CK. (2018). *Computationally Efficient Distribution Theory for Bayesian Inference of High-Dimensional Dependent Count-Valued Data (with discussion).* Bayesian Analysis. 13: 253 - 302. *Rejoinder:* 302 - 310.
+
+Hu, G, Bradley, JR. (2018). A Bayesian Spatio-Temporal Model for Analyzing Earthquake Magnitudes. *Stat.* 7(1): e179.
 
 # Installation
 ```
