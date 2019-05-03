@@ -1,15 +1,11 @@
+```
 #install.packages("devtools",dependencies=TRUE) #install devtools from CRAN
-
 #library(devtools) #load devtools
-
 #install_github("hadley/devtools")#install devtools from Github
-
 library(devtools)
-
 install_github("JonathanBradley28/CM")
-
 library(CM)
-
+```
 ###################
 #The help file contains simulation examples. For example, if you type help(GibbsPoissonMLG) or ??GibbsPoissonMLG, the help file will contain the following code
 
