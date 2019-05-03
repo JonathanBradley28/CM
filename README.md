@@ -1,4 +1,8 @@
 # CM
+This package provides functionality to implement latent conjugate multivariate models for non-Gaussian data.
+
+For examples of how to use the package, please see the help files. Please note that CM is under active development.
+
 
 ```
 #install.packages("devtools",dependencies=TRUE) #install devtools from CRAN
