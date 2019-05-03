@@ -73,7 +73,7 @@ X<-qr.Q(outX)
 output<-GibbsPoissonMLG(Niter=2000,X,G,data)
 ```
 
-Peform MCMC diagnostics using the R package 1 "code." Note that alpha_delta does not mix well. Of course, one could thin the MCMC to reduce autocorrelation, however, we choose not to. See MacEachern and Berliner (1994) for a discussion on thinning Markov chains.
+Peform MCMC diagnostics using the R package "code." Note that alpha_delta does not mix well. Of course, one could thin the MCMC to reduce autocorrelation, however, we choose not to. See MacEachern and Berliner (1994) for a discussion on thinning Markov chains.
 
 ```
 #trace plots (without burnin)
