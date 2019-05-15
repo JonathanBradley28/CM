@@ -185,7 +185,7 @@ GibbsMultinomialMLB<-function(report,B,y,nn,X,Psi,nslice=2){
     #update shapes beta using adaptive rejection
     #update shapes beta using slice sampler
     f<-function(x){
-      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x -x*sum(beta.gibbs[,b])
+      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x +x*sum(beta.gibbs[,b])
       if (x<0.01){
         like = -Inf;
       }
@@ -239,7 +239,7 @@ GibbsMultinomialMLB<-function(report,B,y,nn,X,Psi,nslice=2){
     #update shapes eta using adaptive rejection
     f<-function(x){
 
-      like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x -x*sum(eta.gibbs[,b]))
+      like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x +x*sum(eta.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }
@@ -303,7 +303,7 @@ GibbsMultinomialMLB<-function(report,B,y,nn,X,Psi,nslice=2){
 
     #update shape xi using adaptive rejection
     f<-function(x){
-      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x -x*sum(xi.gibbs[,b]))
+      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x +x*sum(xi.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }

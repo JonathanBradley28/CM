@@ -169,7 +169,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
 
         #update shapes beta using slice sampler
         f<-function(x){
-          like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x -x*sum(beta.gibbs[,b])
+          like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x +x*sum(beta.gibbs[,b])
           if (x<0.01){
             like = -Inf;
           }
@@ -223,7 +223,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
         #update shapes eta using slice sampler
         f<-function(x){
 
-          like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x -x*sum(eta.gibbs[,b]))
+          like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x +x*sum(eta.gibbs[,b]))
           if (x<0.01){
             like = -Inf;
           }
@@ -287,7 +287,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
 
         #update shape xi using slice sampler
         f<-function(x){
-          like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x -x*sum(xi.gibbs[,b]))
+          like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x +x*sum(xi.gibbs[,b]))
           if (x<0.01){
             like = -Inf;
           }
@@ -469,7 +469,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
 
     #update shapes beta using slice sampler
       f<-function(x){
-      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x -x*sum(beta.gibbs[,b])
+      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x +x*sum(beta.gibbs[,b])
       if (x<0.01){
         like = -Inf;
       }
@@ -523,7 +523,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
     #update shapes eta using slice sampler
     f<-function(x){
 
-        like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x -x*sum(eta.gibbs[,b]))
+        like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x +x*sum(eta.gibbs[,b]))
         if (x<0.01){
           like = -Inf;
         }
@@ -587,7 +587,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
 
     #update shape xi using slice sampler
     f<-function(x){
-      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x -x*sum(xi.gibbs[,b]))
+      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x +x*sum(xi.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }
@@ -649,7 +649,7 @@ GibbsBinomialMLB<-function(B,data,nn,X,G,report=100,rho=0.999,cs=c(0,0,0),eps=0.
   #reorganize mcmc reps of nu into pi according to Section 2.1
  pi.gibbs = exp(nu.gibbs)/(1+exp(nu.gibbs))
 
- nu.smooth.gibbs=X%*%(beta.gibbs)+G%*%(eta.gibbs)
+ nu.smooth.gibbs=X%*%(beta.gibbs)+G%*%(eta.gibbs) + mean(xi.gibbs[,(B/2):B])
  pi.smooth.gibbs= exp(nu.smooth.gibbs)/(1+exp(nu.smooth.gibbs))
 
  output<-list(pi=pi.gibbs,pi.smooth=pi.smooth.gibbs,beta=beta.gibbs,eta=eta.gibbs,xi=xi.gibbs,alphab=alphab,kappab=kappab,alphae=alphae,kappae=kappae,alphax=alphax,kappax=kappax)

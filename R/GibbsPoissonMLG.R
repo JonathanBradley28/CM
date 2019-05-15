@@ -85,7 +85,18 @@
 #' lambda_lower= apply(output$lambda_rep[,1000:2000],1,quantile,0.025)
 #' lambda_upper= apply(output$lambda_rep[,1000:2000],1,quantile,0.975)
 #'
-#' #plot data and truth
+#' #plot estimates and truth
+#' plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
+#' lines(1:m,lambda_est,col="red")
+#' lines(1:m,lambda_lower,col="blue")
+#' lines(1:m,lambda_upper,col="blue")
+#'
+#' #smooth estimates (remove a burnin)
+#' lambda_est = apply(output$lambda_rep_smooth[,1000:2000],1,mean)
+#' lambda_lower= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.025)
+#' lambda_upper= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.975)
+#'
+#' #plot smooth estimates and truth
 #' plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
 #' lines(1:m,lambda_est,col="red")
 #' lines(1:m,lambda_lower,col="blue")
@@ -296,11 +307,17 @@ GibbsPoissonMLG<-function(Niter=2000,X,G,data, sigbeta=1e-15,printevery=100,upda
     lambda_rep[,j] = exp(X%*%betas[,j]+G%*%etas[,j]+deltas[,j])
   }
 
+  lambda_rep_smooth = matrix(0,dim(G)[1],Niter)
+  deltmean = mean(deltas[,(Niter/2):Niter])
+  for (j in 1:Niter){
+    lambda_rep_smooth[,j] = exp(X%*%betas[,j]+G%*%etas[,j]+deltmean)
+  }
+
   if (jointupdate==FALSE){
 
-  output = list(betas,etas,deltas,lambda_rep,alpha_b,alpha_eta,alpha_delta)
+  output = list(betas,etas,deltas,lambda_rep,lambda_rep_smooth,alpha_b,alpha_eta,alpha_delta)
 
-  names(output) <- c("betas","etas","deltas","lambda_rep","alpha_b","alpha_eta","alpha_delta")
+  names(output) <- c("betas","etas","deltas","lambda_rep","lambda_rep_smooth","alpha_b","alpha_eta","alpha_delta")
 
   return(output)}
 
@@ -308,9 +325,10 @@ GibbsPoissonMLG<-function(Niter=2000,X,G,data, sigbeta=1e-15,printevery=100,upda
 
     betas = etas[1:p,]
     etas = etas[(p+1):r,]
-    output = list(betas,etas,deltas,lambda_rep,alpha_eta,alpha_delta)
 
-    names(output) <- c("betas","etas","deltas","lambda_rep","alpha_eta","alpha_delta")
+    output = list(betas,etas,deltas,lambda_rep,lambda_rep_smooth,alpha_eta,alpha_delta)
+
+    names(output) <- c("betas","etas","deltas","lambda_rep","lambda_rep_smooth","alpha_eta","alpha_delta")
 
     return(output)}
 

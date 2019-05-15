@@ -98,8 +98,9 @@
 #' plot((as.mcmc(output$xi[10,burnin:B])))
 #'
 #' nu.gibbsf=X%*%(output$beta)+G%*%(output$eta)
+#' ximean=mean(output$xi[,1000:2000])
 #' for (b in 1:2000){
-#'   nu.gibbsf[,b]=nu.gibbsf[,b]+mean(output$xi[,b])
+#'   nu.gibbsf[,b]=nu.gibbsf[,b]+ximean
 #' }
 #' pi.gibbsf= exp(nu.gibbsf)/(1+exp(nu.gibbsf))
 #'
@@ -466,7 +467,7 @@ cxi=estpar$par[5]
 
     #update shapes beta using slice sampler
     f<-function(x){
-      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x -x*sum(beta.gibbs[,b])
+      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x +x*sum(beta.gibbs[,b])
       if (x<0.01){
         like = -Inf;
       }
@@ -520,7 +521,7 @@ cxi=estpar$par[5]
     #update shapes eta using slice sampler
     f<-function(x){
 
-      like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x -x*sum(eta.gibbs[,b]))
+      like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x +x*sum(eta.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }
@@ -584,7 +585,7 @@ cxi=estpar$par[5]
 
     #update shape xi using slice sampler
     f<-function(x){
-      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x -x*sum(xi.gibbs[,b]))
+      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x +x*sum(xi.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }
