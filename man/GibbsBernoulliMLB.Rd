@@ -127,8 +127,9 @@ plot((as.mcmc(output$eta[5,burnin:B])))
 plot((as.mcmc(output$xi[10,burnin:B])))
 
 nu.gibbsf=X\%*\%(output$beta)+G\%*\%(output$eta)
+ximean=mean(output$xi[,1000:2000])
 for (b in 1:2000){
-  nu.gibbsf[,b]=nu.gibbsf[,b]+mean(output$xi[,b])
+  nu.gibbsf[,b]=nu.gibbsf[,b]+ximean
 }
 pi.gibbsf= exp(nu.gibbsf)/(1+exp(nu.gibbsf))
 

@@ -102,6 +102,7 @@ plot(as.mcmc(output$etas[1,1000:2000]))
 plot(as.mcmc(output$etas[8,1000:2000]))
 plot(as.mcmc(output$deltas[10,1000:2000]))
 plot(as.mcmc(output$alpha_eta[1,1000:2000]))
+#alpha_delta does not mix well, one could thin, however, we choose not to. See MacEachern and Berliner (1994) for a discussion on thinning.
 plot(as.mcmc(output$alpha_delta[1,1000:2000]))
 
 #estimates (remove a burnin)
@@ -109,7 +110,18 @@ lambda_est = apply(output$lambda_rep[,1000:2000],1,mean)
 lambda_lower= apply(output$lambda_rep[,1000:2000],1,quantile,0.025)
 lambda_upper= apply(output$lambda_rep[,1000:2000],1,quantile,0.975)
 
-#plot data and truth
+#plot estimates and truth
+plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
+lines(1:m,lambda_est,col="red")
+lines(1:m,lambda_lower,col="blue")
+lines(1:m,lambda_upper,col="blue")
+
+#smooth estimates (remove a burnin)
+lambda_est = apply(output$lambda_rep_smooth[,1000:2000],1,mean)
+lambda_lower= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.025)
+lambda_upper= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.975)
+
+#plot smooth estimates and truth
 plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
 lines(1:m,lambda_est,col="red")
 lines(1:m,lambda_lower,col="blue")
