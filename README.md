@@ -91,11 +91,23 @@ lambda_lower= apply(output$lambda_rep[,1000:2000],1,quantile,0.025)
 lambda_upper= apply(output$lambda_rep[,1000:2000],1,quantile,0.975)
 
 
-#plot data and truth
+#plot estimates and truth
 plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
 lines(1:m,lambda_est,col="red")
 lines(1:m,lambda_lower,col="blue")
 lines(1:m,lambda_upper,col="blue")
+
+#smooth estimates (remove a burnin)
+lambda_est = apply(output$lambda_rep_smooth[,1000:2000],1,mean)
+lambda_lower= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.025)
+lambda_upper= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.975)
+
+#plot smooth estimates and truth
+plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
+lines(1:m,lambda_est,col="red")
+lines(1:m,lambda_lower,col="blue")
+lines(1:m,lambda_upper,col="blue")
+
 ```
 
 To access examples for Binomial, Bernoulli, and Multinomial data, copy and paste from the help files
