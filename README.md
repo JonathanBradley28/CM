@@ -28,7 +28,7 @@ The help files contain small simulation examples. For example, if you type help(
 set.seed(123)
 #define a test function
 #A non-linear test function
-lambda <- function(t) exp(1.1 + sin(2 &ast; pi &ast; t))
+lambda <- function(t) exp(1.1 + sin(2 * pi * t))
 
 #define some 1-d locations
 points = seq(0,1,length.out=1001)
