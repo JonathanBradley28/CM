@@ -68,6 +68,7 @@
 #' outX<-qr(X)
 #' X<-qr.Q(outX)
 #'
+#'
 #' #Run the MCMC algorithm
 #' output<-GibbsPoissonMLG(Niter=2000,X,G,data)
 #'
@@ -101,8 +102,17 @@
 #' lines(1:m,lambda_est,col="red")
 #' lines(1:m,lambda_lower,col="blue")
 #' lines(1:m,lambda_upper,col="blue")
+#' covmat = matrix(0,1000,1000)
+#' for (jj in 1:1001){
+#'   covmat = covmat+(output$lambda_rep[,jj] - lambda_est)%*%t((output$lambda_rep[,jj] - lambda_est))/1001
+#'   print(jj)
+#' }
+#' vars = 1/sqrt(diag(covmat))
+#' corrmat= diag(vars)%*%covmat%*% diag(vars)
+#' image(corrmat)
+#'
 #' @export
-GibbsPoissonMLG<-function(Niter=2000,X,G,data, sigbeta=1e-15,printevery=100,updatekappa=FALSE,jointupdate=TRUE){
+GibbsPoissonMLG<-function(Niter=2000,X,G,data, sigbeta=10,printevery=100,updatekappa=FALSE,jointupdate=TRUE){
 
   p=dim(X)[2]
   if (jointupdate==TRUE){
@@ -240,15 +250,30 @@ GibbsPoissonMLG<-function(Niter=2000,X,G,data, sigbeta=1e-15,printevery=100,upda
     }
 
     ###update etas #####
+    if (jointupdate==FALSE){
+      Hetas=rbind(G,variances1)
+      alphaetas=rbind(zetaadj+alpha_eta[t],alpha_eta[t]*matrix(1,r,1))
+      kappaetas=rbind(exp(X%*%betas[,t]+deltas[,t-1])+kappa_eta[t],kappa_eta[t]*matrix(1,r,1))
+      etas[,t]=solve(t(Hetas)%*%Hetas)%*%t(Hetas)%*%log(rgamma((m+r),alphaetas,rate=kappaetas))
+    }
+    if (jointupdate==TRUE){
     Hetas=rbind(G,variances1)
     alphaetas=rbind(zetaadj+alpha_eta[t],alpha_eta[t]*matrix(1,r,1))
-    kappaetas=rbind(exp(X%*%betas[,t]+deltas[,t-1])+kappa_eta[t],kappa_eta[t]*matrix(1,r,1))
+    kappaetas=rbind(exp(matrix(deltas[,t-1], ncol=1))+kappa_eta[t],kappa_eta[t]*matrix(1,r,1))
+      #rbind(exp(X%*%betas[,t]+deltas[,t-1])+kappa_eta[t],kappa_eta[t]*matrix(1,r,1))
     etas[,t]=solve(t(Hetas)%*%Hetas)%*%t(Hetas)%*%log(rgamma((m+r),alphaetas,rate=kappaetas))
-
+    }
     #### update deltas ####
-    alphadeltas=zetaadj+alpha_delta[t]*matrix(1,m,1)
-    kappadeltas=exp(X%*%betas[,t]+G%*%etas[,t])+kappa_delta[t]*matrix(1,m,1)
-    deltas[,t]=log(rgamma(m,alphadeltas,rate=kappadeltas))
+    if (jointupdate==FALSE){
+      alphadeltas=zetaadj+alpha_delta[t]*matrix(1,m,1)
+      kappadeltas=exp(X%*%betas[,t]+G%*%etas[,t])+kappa_delta[t]*matrix(1,m,1)
+      deltas[,t]=log(rgamma(m,alphadeltas,rate=kappadeltas))
+    }
+    if (jointupdate==TRUE){
+      alphadeltas=zetaadj+alpha_delta[t]*matrix(1,m,1)
+      kappadeltas=exp(G%*%etas[,t])+kappa_delta[t]*matrix(1,m,1)
+      deltas[,t]=log(rgamma(m,alphadeltas,rate=kappadeltas))
+    }
 
     #update var of eta
     fve<-function(x){
