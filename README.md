@@ -108,6 +108,16 @@ lines(1:m,lambda_est,col="red")
 lines(1:m,lambda_lower,col="blue")
 lines(1:m,lambda_upper,col="blue")
 
+
+covmat = matrix(0,1000,1000)
+for (jj in 1:1001){
+  covmat = covmat+(output$lambda_rep[,jj] - lambda_est)%*%t((output$lambda_rep[,jj] - lambda_est))/1001
+  print(jj)
+}
+vars = 1/sqrt(diag(covmat))
+corrmat= diag(vars)%*%covmat%*% diag(vars)
+image(corrmat)
+
 ```
 
 To access examples for Binomial, Bernoulli, and Multinomial data, copy and paste from the help files
