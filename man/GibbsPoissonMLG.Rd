@@ -4,7 +4,7 @@
 \alias{GibbsPoissonMLG}
 \title{Poisson LCM}
 \usage{
-GibbsPoissonMLG(Niter = 2000, X, G, data, sigbeta = 1e-15,
+GibbsPoissonMLG(Niter = 2000, X, G, data, sigbeta = 10,
   printevery = 100, updatekappa = FALSE, jointupdate = TRUE)
 }
 \arguments{
@@ -93,6 +93,7 @@ G<-qr.Q(outG)
 outX<-qr(X)
 X<-qr.Q(outX)
 
+
 #Run the MCMC algorithm
 output<-GibbsPoissonMLG(Niter=2000,X,G,data)
 
@@ -126,4 +127,13 @@ plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
 lines(1:m,lambda_est,col="red")
 lines(1:m,lambda_lower,col="blue")
 lines(1:m,lambda_upper,col="blue")
+covmat = matrix(0,1000,1000)
+for (jj in 1:1001){
+  covmat = covmat+(output$lambda_rep[,jj] - lambda_est)\%*\%t((output$lambda_rep[,jj] - lambda_est))/1001
+  print(jj)
+}
+vars = 1/sqrt(diag(covmat))
+corrmat= diag(vars)\%*\%covmat\%*\% diag(vars)
+image(corrmat)
+
 }
