@@ -65,7 +65,7 @@
 #'
 #' ##compute the basis function matrix
 #' #compute thin-plate splines
-#' r = 8
+#' r = 12
 #' knots = seq(0,1,length.out=r)
 #'
 #' #orthogonalize G
@@ -84,7 +84,7 @@
 #' Xhold=as.matrix(X[ind[1:floor(0.1*n)],])
 #' Ghold=G[ind[1:floor(0.1*n)],]
 #'
-#' output<-GibbsBernoulliMLB(B,train,Xtrain,Gtrain,itmax = 300)
+#' output<-GibbsBernoulliMLB(B,train,Xtrain,Gtrain,itmax = 50)
 #'
 #' #check some trace plots
 #' plot((as.mcmc(output$beta[1,burnin:B])))
@@ -106,7 +106,7 @@
 #'
 #' #hows our estimate of the proportions?
 #' pihatf = apply(pi.gibbsf[,1000:2000], 1, mean)
-#' piboundsf = apply(pi.gibbsf[,1000:2000], 1, quantile, probs = c(0.025,0.975))
+#' piboundsf = apply(pi.gibbsf[,1000:2000], 1, quantile, probs = c(0.005,0.995))
 #'
 #' plot(points,pi1,ylim=c(0,1))
 #' lines(sort(points),pihatf,col="red")
@@ -119,15 +119,15 @@ p = dim(X)[2]
 r = dim(G)[2]
 nn=matrix(1,n,1)
 
-
+#dataset needs to be at least 10
 ind=sample(n,n)
-train=data[ind[(floor(0.1*n)+1):(floor(0.5*n))]]
+train=data[ind[(floor(0.1*n)+1):(floor(n))]]
 valid=data[ind[1:floor(0.1*n)]]
 
-Hbeta = rbind(as.matrix(X[ind[(floor(0.1*n)+1):(floor(0.5*n))],]), as.matrix(X[ind[(floor(0.1*n)+1):(floor(0.5*n))],]),diag(p))
+Hbeta = rbind(as.matrix(X[ind[(floor(0.1*n)+1):(floor(n))],]), as.matrix(X[ind[(floor(0.1*n)+1):(floor(n))],]),diag(p))
 HpHinvBeta = solve(t(Hbeta)%*%Hbeta)
 
-Heta = rbind(G[ind[(floor(0.1*n)+1):(floor(0.5*n))],], G[ind[(floor(0.1*n)+1):(floor(0.5*n))],],diag(r))
+Heta = rbind(G[ind[(floor(0.1*n)+1):(floor(n))],], G[ind[(floor(0.1*n)+1):(floor(n))],],diag(r))
 HpHinvEta = solve(t(Heta)%*%Heta)
 H = rbind(diag(length(train)), diag(length(train)),diag(length(train)))
 
@@ -171,7 +171,7 @@ GibbsBinomialMLB2<-function(B,data,nn,X,G,report=100,rho=0.999,eps=0.01,cb,ce,cx
 
     #update shapes beta using slice sampler
     f<-function(x){
-      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x -x*sum(beta.gibbs[,b])
+      like= -p*(lgamma(x)) - p*(lgamma(kappab[b-1] -x))-x +x*sum(beta.gibbs[,b])
       if (x<0.01){
         like = -Inf;
       }
@@ -225,7 +225,7 @@ GibbsBinomialMLB2<-function(B,data,nn,X,G,report=100,rho=0.999,eps=0.01,cb,ce,cx
     #update shapes eta using slice sampler
     f<-function(x){
 
-      like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x -x*sum(eta.gibbs[,b]))
+      like=(-r*(lgamma(x)) - r*(lgamma(kappae[b-1] -x))-x +x*sum(eta.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }
@@ -289,7 +289,7 @@ GibbsBinomialMLB2<-function(B,data,nn,X,G,report=100,rho=0.999,eps=0.01,cb,ce,cx
 
     #update shape xi using slice sampler
     f<-function(x){
-      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x -x*sum(xi.gibbs[,b]))
+      like=(-n*(lgamma(x)) - n*(lgamma(kappax[b-1] -x))-x +x*sum(xi.gibbs[,b]))
       if (x<0.01){
         like = -Inf;
       }
@@ -360,7 +360,7 @@ SimpleClassifier<-function(data,phat,holdout=NULL,phathold=NULL){
 
   cutoff<-function(lambda){
     estpos=phat>lambda
-    helliginer= sum((sqrt(data)-sqrt(estpos))^2)
+    helliginer= sum((sqrt(mean(data)*data)-sqrt(estpos))^2)
     return(helliginer)
   }
 
@@ -392,16 +392,16 @@ fz<-function(z){
         if (0.01<z[2]){
           if (z[1]+z[2]<0.99){
 
-            output<-GibbsBinomialMLB2(50,train,matrix(1,length(train),1),as.matrix(X[ind[(floor(0.1*n)+1):(floor(0.5*n))],]),G[ind[(floor(0.1*n)+1):(floor(0.5*n))],],report=1e15,rho=z[1],eps=z[2],z[3],z[4],z[5],2)
+            output<-GibbsBinomialMLB2(100,train,matrix(1,length(train),1),as.matrix(X[ind[(floor(0.1*n)+1):(floor(n))],]),G[ind[(floor(0.1*n)+1):(floor(n))],],report=1e15,rho=z[1],eps=z[2],z[3],z[4],z[5],2)
 
-            nuest=X[ind[(floor(0.1*n)+1):(floor(0.5*n))],]%*%output$beta + G[ind[(floor(0.1*n)+1):(floor(0.5*n))],]%*%output$eta
+            nuest=X[ind[(floor(0.1*n)+1):(floor(n))],]%*%output$beta + G[ind[(floor(0.1*n)+1):(floor(n))],]%*%output$eta
             nuesthold=X[ind[1:floor(0.1*n)],]%*%output$beta + G[ind[1:floor(0.1*n)],]%*%output$eta
 
             piest = exp(nuest)/(1+exp(nuest))
-            phat = rowMeans(piest[,25:50])
+            phat = rowMeans(piest[,50:100])
 
             piesthold = exp(nuesthold)/(1+exp(nuesthold))
-            phathold = rowMeans(piesthold[,25:50])
+            phathold = rowMeans(piesthold[,50:100])
 
             results<-SimpleClassifier(train,phat,valid,phathold)
 
