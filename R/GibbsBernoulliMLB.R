@@ -84,7 +84,7 @@
 #' Xhold=as.matrix(X[ind[1:floor(0.1*n)],])
 #' Ghold=G[ind[1:floor(0.1*n)],]
 #'
-#' output<-GibbsBernoulliMLB(B,train,Xtrain,Gtrain,itmax = 50)
+#' output<-GibbsBernoulliMLB(B,train,Xtrain,Gtrain,itmax = 100)
 #'
 #' #check some trace plots
 #' plot((as.mcmc(output$beta[1,burnin:B])))
