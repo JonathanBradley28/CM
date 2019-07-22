@@ -5,7 +5,8 @@
 \title{Poisson LCM}
 \usage{
 GibbsPoissonMLG(Niter = 2000, X, G, data, sigbeta = 10,
-  printevery = 100, updatekappa = FALSE, jointupdate = TRUE)
+  printevery = 100, updatekappa = FALSE, jointupdate = TRUE,
+  estRegress = TRUE)
 }
 \arguments{
 \item{Niter}{The number of iterations of the collapsed Gibbs sampler}
@@ -23,6 +24,8 @@ GibbsPoissonMLG(Niter = 2000, X, G, data, sigbeta = 10,
 \item{updatekappa}{Updating kappa is not needed if X contains an intercept. The default is FALSE.}
 
 \item{jointupdate}{Block update beta and eta together. Default is TRUE.}
+
+\item{estRegress}{Indicator variable. If true, regression parameters will be based on regressing onto Y = Xbeta+G eta + delta}
 }
 \value{
 betas A pxNiter matrix of MCMC values for beta. The vector beta corresponds to the covariates X.
@@ -135,5 +138,87 @@ for (jj in 1:1000){
 vars = 1/sqrt(diag(covmat))
 corrmat= diag(vars)\%*\%covmat\%*\% diag(vars)
 image(corrmat)
+
+
+------------------
+
+#Example 2
+
+#library(devtools)
+#install_github("JonathanBradley28/CM")
+library(CM)
+
+set.seed(12)
+#define some 1-d locations
+points = seq(0,1,length.out=201)
+points=points[2:201]
+m = dim(as.matrix(points))[1]
+
+#covariate intercept-only
+X = matrix(1,m,1)
+p <- dim(X)[2]
+
+##compute the basis function matrix
+#compute thin-plate splines
+r = 8
+knots = seq(0,1,length.out=r)
+
+#orthogonalize G
+G = THINSp(as.matrix(points,m,1),as.matrix(knots,r,1))
+outG<-qr(G)
+G<-qr.Q(outG)
+
+#get the true mean at these locations
+trueeta = c(-1,1,-2,2,-3,3,1,1)
+truemean=matrix(0,length(points),1)
+for (j in 1:length(points)){
+ truemean[j,1] = exp(X[j]*2+G[j,]\%*\%trueeta)
+}
+
+#simulate the data
+data = matrix(0,m,1)
+for (i in 1:m){
+ data[i] = rpois(1,truemean[i])
+}
+
+#see how many zeros there are
+sum(data==0)
+
+#plot the data
+plot(data,xlab="time",ylab="Poisson counts",main="Counts vs. time")
+
+#orthogonalize X
+#outX<-qr(X)
+#X<-qr.Q(outX)
+
+#Run the MCMC algorithm
+output<-GibbsPoissonMLG(Niter=2000,X,G,data,sigbeta=100,jointupdate = FALSE)
+
+#trace plots (without burnin)
+betaerror = (2-mean(output$betas[1000:2000]))^2
+plot(as.mcmc(output$betas[1000:2000]))
+etaerror = mean((trueeta-apply(output$etas[,1000:2000],1,mean))^2)
+plot(as.mcmc(output$etas[1,1000:2000]))
+plot(as.mcmc(output$etas[2,1000:2000]))
+plot(as.mcmc(output$etas[3,1000:2000]))
+plot(as.mcmc(output$etas[4,1000:2000]))
+plot(as.mcmc(output$etas[5,1000:2000]))
+plot(as.mcmc(output$etas[6,1000:2000]))
+plot(as.mcmc(output$etas[7,1000:2000]))
+plot(as.mcmc(output$etas[8,1000:2000]))
+prederror =mean((truemean-apply(output$lambda_rep[,1000:2000],1,mean))^2)
+plot(as.mcmc(output$deltas[1,1000:2000]))
+plot(as.mcmc(output$deltas[2,1000:2000]))
+
+#estimates (remove a burnin)
+lambda_est = apply(output$lambda_rep_smooth[,1000:2000],1,mean)
+lambda_lower= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.025)
+lambda_upper= apply(output$lambda_rep_smooth[,1000:2000],1,quantile,0.975)
+
+#plot estimates and truth
+plot(1:m,truemean,ylim = c(0,max(lambda_upper)+1))
+lines(1:m,lambda_est,col="red")
+lines(1:m,lambda_lower,col="blue")
+lines(1:m,lambda_upper,col="blue")
 
 }
