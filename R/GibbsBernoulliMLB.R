@@ -136,7 +136,7 @@
 #' lines(sort(points),piboundsf[1,],col="blue")
 #' lines(sort(points),piboundsf[2,],col="blue")
 #' @export
-GibbsBernoulliMLBtt<-function(B,data,X,G,ini,report=100,itmax=20,nslice=2){
+GibbsBernoulliMLB<-function(B,data,X,G,ini,report=100,itmax=20,nslice=2){
   n = length(data)
   p = dim(X)[2]
   r = dim(G)[2]
