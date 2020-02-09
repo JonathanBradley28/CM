@@ -5,7 +5,7 @@ For examples of how to use the package, please see the help files. Please note t
 
 # References
 
-Bradley, JR, Holan, SH, and Wikle, CK. (2019). Bayesian Hierarchical Models with Conjugate Full-Conditional Distributions for Dependent Data from the Natural Exponential Family. *Journal of the American Statistical Association.*
+Bradley, JR, Holan, SH, and Wikle, CK. (2020). Bayesian Hierarchical Models with Conjugate Full-Conditional Distributions for Dependent Data from the Natural Exponential Family. *Journal of the American Statistical Association.*
 
 Bradley, JR, Wikle, CK, and Holan, SH. (2019). Spatio-Temporal Models for Big Multinomial Data using the Conditional Multivariate Logit-Beta Distribution. *Journal of Time Series Analysis.* 40: 363 - 382.
 
