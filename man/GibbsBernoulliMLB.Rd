@@ -4,7 +4,7 @@
 \alias{GibbsBernoulliMLB}
 \title{Bernoulli LCM}
 \usage{
-GibbsBernoulliMLB(B, data, X, G, report = 100, itmax = 20,
+GibbsBernoulliMLB(B, data, X, G, ini = NA, report = 100, itmax = 20,
   nslice = 2)
 }
 \arguments{
@@ -15,6 +15,8 @@ GibbsBernoulliMLB(B, data, X, G, report = 100, itmax = 20,
 \item{X}{An nxp matrix of covariates. Each column represents a covariate. Each row corresponds to one of the n replicates.}
 
 \item{G}{An nxr matrix of basis functions. Each column represents a basis function. Each row corresponds to one of the n replicates.}
+
+\item{ini}{Initial estimate of the proportions to aid in selecting hyperparameters. Default is the sample proportion.}
 
 \item{report}{Option to print the iteration number of the MCMC.}
 
@@ -48,7 +50,7 @@ kappax A 1xB matrix of MCMC values for the second shape parameter associated wit
 hypparams The selected hyperparameters.
 }
 \description{
-This code implements a version of the collapsed Gibbs sampler from Bradley et al. (2018). The model assumes that data follow a Bernoulli distribution with a logit link to a mixed effects model. The priors and random effects are assumed to follow a multivariate logit-beta distribution.
+This code implements a version of the collapsed Gibbs sampler from Bradley et al. (2020). The model assumes that data follow a Bernoulli distribution with a logit link to a mixed effects model. The priors and random effects are assumed to follow a multivariate logit-beta distribution.
 }
 \examples{
 
@@ -57,7 +59,7 @@ library(CM)
 set.seed(4000)
 
 #simulate pseudo data
-n = 1000
+n = 600
 #define a test function
 #A non-linear test function
 lambda <- function(t) (0.1 + sin(2*pi*t))
@@ -69,7 +71,7 @@ points=points[1:n+2]
 #get the logit true proportion at these locations
 truemean<-matrix(0,n,1)
 for (j in 1:length(points)){
-  truemean[j,1] = lambda(points[j])
+ truemean[j,1] = lambda(points[j])
 }
 
 #simulate logit proportion
@@ -94,11 +96,34 @@ X = matrix(1,n,1)
 
 ##compute the basis function matrix
 #compute thin-plate splines
-r = 8
+r = 10
 knots = seq(0,1,length.out=r)
 
-#orthogonalize G
-G = THINSp(as.matrix(points,n,1),as.matrix(knots,r,1))
+# basis matrix
+Bisquare<-function(locs,knots,tol,smoother){
+ r = dim(knots)[1]
+ n = dim(locs)[1]
+ disKnots = matrix(0,r,r)
+ for (j in 1:r){
+   disKnots[r,]=sqrt((knots[j,]-knots)^2)
+ }
+ disKnots<-disKnots[disKnots!=0]
+ r_l<-smoother*max(disKnots)
+
+ psi = matrix(0,n,r)
+ for (i in 1:n){
+   for (j in 1:r){
+     if (sum(sqrt((locs[i,]-knots[j,])^2))<tol){
+       psi[i,j]= (1-(sum(sqrt((locs[i,]-knots[j,])^2))/r_l)^2)^2
+     }
+   }
+ }
+ for (j in 1:r){
+   psi[,j] = psi[,j]/max(psi[,j])
+ }
+ return(psi)
+}
+G = Bisquare(as.matrix(points,n,1),as.matrix(knots,r,1),tol=0.5,smoother=0.5)
 
 #number of MCMC reps
 B = 2000
@@ -113,7 +138,7 @@ Gtrain=G[ind[(floor(0.1*n)+1):n],]
 Xhold=as.matrix(X[ind[1:floor(0.1*n)],])
 Ghold=G[ind[1:floor(0.1*n)],]
 
-output<-GibbsBernoulliMLB(B,train,Xtrain,Gtrain,itmax = 300)
+output<-GibbsBernoulliMLB(B,train,Xtrain,Gtrain,loess.smooth(points, data)$y,itmax = 10000)
 
 #check some trace plots
 plot((as.mcmc(output$beta[1,burnin:B])))
@@ -127,16 +152,23 @@ plot((as.mcmc(output$eta[5,burnin:B])))
 plot((as.mcmc(output$xi[10,burnin:B])))
 
 nu.gibbsf=X\%*\%(output$beta)+G\%*\%(output$eta)
-ximean=mean(output$xi[,1000:2000])
-for (b in 1:2000){
+#xi may have a posterior mean not equal to zero
+ximean=mean(output$xi[,burnin:B])
+for (b in 1:B){
   nu.gibbsf[,b]=nu.gibbsf[,b]+ximean
 }
 pi.gibbsf= exp(nu.gibbsf)/(1+exp(nu.gibbsf))
 
 #hows our estimate of the proportions?
-pihatf = apply(pi.gibbsf[,1000:2000], 1, mean)
-piboundsf = apply(pi.gibbsf[,1000:2000], 1, quantile, probs = c(0.025,0.975))
+pihatf = apply(pi.gibbsf[,burnin:B], 1, mean)
+piboundsf = apply(pi.gibbsf[,burnin:B], 1, quantile, probs = c(0.025,0.975))
 
+#recenter predicted probabilities around the mean of the data
+pi.gibbsf=  pi.gibbsf + mean(data)-mean(pihatf)
+
+#hows our estimate of the proportions?
+pihatf = apply(pi.gibbsf[,burnin:B], 1, mean)
+piboundsf = apply(pi.gibbsf[,burnin:B], 1, quantile, probs = c(0.025,0.975))
 plot(points,pi1,ylim=c(0,1))
 lines(sort(points),pihatf,col="red")
 lines(sort(points),piboundsf[1,],col="blue")
