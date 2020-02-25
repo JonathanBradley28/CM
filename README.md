@@ -127,4 +127,5 @@ help(GibbsBinomialMLB)
 help(GibbsBernoulliMLB)
 help(GibbsMultinomialMLB)
 help(GibbsPoissonMLG)
+help(WAP)
 ```
