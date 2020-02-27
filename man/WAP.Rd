@@ -101,7 +101,7 @@ ans=WAP(X1,X2,Z1,Z2,psi1,psi2,num_A=100,iter=2000,burn_in = 1000,nslice=50)
 
 
 #estimate versus truth
-q1_mcmc=X1%*%ans$beta1+psi1%*%ans$eta+psi1%*%ans$eta1+ans$gamma1;
+q1_mcmc=X1\%*\%ans$beta1+psi1\%*\%ans$eta+psi1\%*\%ans$eta1+ans$gamma1;
 q1hat = apply(q1_mcmc, 1, mean)
 q1bounds = apply(q1_mcmc, 1, quantile, probs = c(0.025,0.975))
 
@@ -110,7 +110,7 @@ lines(sort(locs),q1hat,col="red")
 lines(sort(locs),q1bounds[1,],col="blue")
 lines(sort(locs),q1bounds[2,],col="blue")
 
-q2_mcmc=X2%*%ans$beta2+psi2%*%ans$eta+psi2%*%ans$eta2+ans$gamma2;
+q2_mcmc=X2\%*\%ans$beta2+psi2\%*\%ans$eta+psi2\%*\%ans$eta2+ans$gamma2;
 q2hat = apply(q2_mcmc, 1, mean)
 q2bounds = apply(q2_mcmc, 1, quantile, probs = c(0.025,0.975))
 
