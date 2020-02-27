@@ -63,16 +63,17 @@ This code implements a version of the collapsed Gibbs sampler from Xu et al. (20
 }
 \examples{
 
+
 library(CM)
 
 set.seed(123000)
-n = 100
+n = 500
 locs = seq(-2*pi,2*pi,length.out=n)
 
 a1=-0.5
-b1=-1
-a2=1
-b2=0.5
+b1=3/2
+a2=-2/3
+b2=-2
 
 q1 = a1+b1*sin(locs)
 q2 = a2 + b2*q1
@@ -83,13 +84,13 @@ Y2 = q2+sqrt(var(a1 + b2*q1)/(n*5))*rnorm(n)
 X1=matrix(1,n,1)
 X2 = matrix(1,n,1)
 
-r = 10
+r = 20
 knots = seq(-2*pi,2*pi,length.out=r)
 psi1 = THINSp(as.matrix(locs),as.matrix(knots))
 psi2 = psi1
 
-Z1=rweibull(n,1,exp(-q1))
-Z2=rpois(n,exp(q2))
+Z1=rweibull(n,1,exp(-Y1))
+Z2=rpois(n,exp(Y2))
 
 #plot data
 plot(Z2)
@@ -97,11 +98,10 @@ plot(Z1)
 
 # example here is for the chain output
 ans=WAP(X1,X2,Z1,Z2,psi1,psi2,num_A=100,iter=2000,burn_in = 1000,nslice=50)
-iter = 400
-burn_in = 100
+
 
 #estimate versus truth
-q1_mcmc=X1\%*\%ans$beta1+psi1\%*\%ans$eta+psi1\%*\%ans$eta1+ans$gamma1;
+q1_mcmc=X1%*%ans$beta1+psi1%*%ans$eta+psi1%*%ans$eta1+ans$gamma1;
 q1hat = apply(q1_mcmc, 1, mean)
 q1bounds = apply(q1_mcmc, 1, quantile, probs = c(0.025,0.975))
 
@@ -110,11 +110,11 @@ lines(sort(locs),q1hat,col="red")
 lines(sort(locs),q1bounds[1,],col="blue")
 lines(sort(locs),q1bounds[2,],col="blue")
 
-q2_mcmc=X2\%*\%ans$beta2+psi2\%*\%ans$eta+psi2\%*\%ans$eta2+ans$gamma2;
+q2_mcmc=X2%*%ans$beta2+psi2%*%ans$eta+psi2%*%ans$eta2+ans$gamma2;
 q2hat = apply(q2_mcmc, 1, mean)
 q2bounds = apply(q2_mcmc, 1, quantile, probs = c(0.025,0.975))
 
-plot(locs,q2,ylim=range(c(q1bounds)))
+plot(locs,q2,ylim=range(c(q2bounds)))
 lines(sort(locs),q2hat,col="red")
 lines(sort(locs),q2bounds[1,],col="blue")
 lines(sort(locs),q2bounds[2,],col="blue")
