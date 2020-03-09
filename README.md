@@ -132,4 +132,6 @@ help(GibbsBernoulliMLB)
 help(GibbsMultinomialMLB)
 help(GibbsPoissonMLG)
 help(WAP)
+help(GibbsNormalGAU)
+help(BTransform)
 ```
