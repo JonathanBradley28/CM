@@ -81,14 +81,14 @@
 #'lines(1:m,f_lower,col="blue")
 #'lines(1:m,f_upper,col="blue")
 #' @export
-GibbsNormalGAU<-function(B,X,G,Z,etas2=NA,betas2=NA,xi=NA,taus2=NA,Hphib2=NA,sig2xi=NA,printevery = 100){
+GibbsNormalGAU<-function(B,X,G,Z,etas2=NA,betas2=NA,xi=NA,taus2=NA,Hphib2=NA,sig2xi=NA,sig2beta2=NA,printevery = 100){
 
 p = dim(X)[2]
 r = dim(G)[2]
 n = length(Z)
 
 
-if (is.na(betas2)==1){
+if (is.na(betas2[1])==1){
 storeit= 1
 betas2 = mvrnorm(1, matrix(0,p,1), diag(p), tol = 1e-3)
 etas2 = mvrnorm(1, matrix(0,r,1), diag(r), tol = 1e-3)
@@ -96,21 +96,22 @@ xi= mvrnorm(1, matrix(0,n,1), diag(n), tol = 1e-3)
 taus2 = 1/rgamma(1,1)
 Hphib2 = (1/rgamma(1,1))*diag(r)
 sig2xi=1/rgamma(1,1)
+sig2beta2=1
 }
-sig2beta2=1 
 
-betas3 = betas2 
-etas3= etas2 
+
+betas3 = betas2
+etas3= etas2
 xi3 = xi
-taus3=taus2 
-Hphib3 = Hphib2 
+taus3=taus2
+Hphib3 = Hphib2[1,1]
 sig2xi3= sig2xi
 sig2beta3 = sig2beta2
 
   #Gibbs Sampling
-  for (i in 2:B){     
+  for (i in 2:B){
 
-    
+
     #update betas
     BetAcovar<-solve((1/taus2)*t(X)%*%X + (1/sig2beta2)*diag(p))
     BetAmean<-(1/taus2)*BetAcovar%*%(t(X)%*%(Z-G%*%etas2-xi))
@@ -139,20 +140,20 @@ xi3 = cbind(xi3 ,xi)
     alphaTau =1+n/2
     betaTau = 1 + 0.5*(t(xi)%*%(xi))
     sig2xi=rigamma(1,alphaTau,betaTau)
-    
+
 
 sig2xi3= cbind(sig2xi3 ,sig2xi)
 
-    
+
     #update taus
     alphaTau =1+n/2
     betaTau = 1 + 0.5*(t(Z-X%*%betas2-G%*%etas2-xi)%*%(Z-X%*%betas2-G%*%etas2-xi))
     taus2=rigamma(1,alphaTau,betaTau)
- 
+
 
 taus3= cbind(taus3,taus2)
 
-    
+
     #update sigma2s
     alphaTau =1+r/2
     betaTau = 1 + 0.5*(t(etas2)%*%(etas2))
@@ -166,12 +167,12 @@ Hphib3= cbind(Hphib3,sigtemp2)
     betaTau = 1 + 0.5*(t(betas2)%*%(betas2))
     sigtemp2=rigamma(1,alphaTau,betaTau)
      sigbeta2=sigtemp2*diag(p)
-sig2beta3 = cbind(sig2beta3 ,sigbeta2)
+sig2beta3 = cbind(sig2beta3 ,sigtemp2)
 
 if (i%%printevery==0){
 print(c("Iteration Number:", i))
 }
-    
+
 }
 
 
