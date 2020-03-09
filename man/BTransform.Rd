@@ -38,7 +38,7 @@ This code produces posterior replicates from the transformation model described 
 \examples{
 library(CM)
 
-Xu = matrix(runif(10*1000),1000,9)
+Xu = matrix(runif(9*1000),1000,9)
 Xt = Xu
 Xt[,1] = sin(pi*Xu[,1]*Xu[,2])
 Xt[,2] = (X[,3] - 0.5)^2
@@ -71,9 +71,10 @@ Psi=Re(output$vectors[,1:r])
 
 y = f[1:350] + rnorm(350)
 y2 = rpois(350,(f[351:700]))
-y3= rbinom(300, 31, (f[701:1000])/31)
+nnn=max(f[701:1000]+4)
+y3= rbinom(300, 31, (f[701:1000])/nnn)
 
-outCM<-BTransform(2000,y,y2,y3,matrix(31,300,1))
+outCM<-BTransform(2000,y,y2,y3,matrix(nnn,300,1))
 
 response = rbind(outCM$xi1,outCM$xi2,outCM$xi3)
 ## Fit the preferred model
@@ -120,11 +121,10 @@ f_lower= apply(exp(yhat2[351:700,]),1,quantile,0.025)
 
  #Binomial count predictions with truth
   f_est=31*apply(exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,median)
-  f_lower= apply(31*exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,quantile,0.025)
-  f_upper= apply(31*exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,quantile,0.975)
+  f_lower= apply(nnn*exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,quantile,0.025)
+  f_upper= apply(nnn*exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,quantile,0.975)
 
    #plot estimates and truth
  plot(f_est,f[701:1000],ylim = c(0,max(f_est)+1))
  abline(0,1)
- @export
 }
