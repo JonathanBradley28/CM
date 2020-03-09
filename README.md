@@ -13,7 +13,9 @@ Bradley, JR, Holan, SH, and Wikle, CK. (2018). Computationally Efficient Distrib
 
 Hu, G, Bradley, JR. (2018). A Bayesian Spatio-Temporal Model for Analyzing Earthquake Magnitudes. *Stat.* 7(1): e179.
 
-Xu, Z,  Bradley, JR, Sinha, D. Latent Multivariate Log-Gamma Models for High-Dimensional Multi-Type Survival Data with Application to Cancer Mapping. *arXiv: 1909.02528*.
+Xu, Z,  Bradley, JR, Sinha, D. (2019) Latent Multivariate Log-Gamma Models for High-Dimensional Multi-Type Survival Data with Application to Cancer Mapping. *arXiv: 1909.02528*.
+
+Bradley, JR (2020) Bayesian analysis of count-valued, binary-valued, and continuous-valued responses using unknown transformations. *arXiv:2002.09983*
 
 # Installation
 ```
