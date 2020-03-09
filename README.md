@@ -124,14 +124,13 @@ image(corrmat)
 
 ```
 
-To access examples for Binomial, Bernoulli, and Multinomial data, copy and paste from the help files
+To access examples for dependent Gaussian, dependent binomial, dependent Bernoulli, dependent multinomial, correlated Weibull and Poisson data, and correlated normal, Poisson, and binomial data, copy and paste from the help files
 
 ```
+help(GibbsNormalGAU)
 help(GibbsBinomialMLB)
 help(GibbsBernoulliMLB)
 help(GibbsMultinomialMLB)
-help(GibbsPoissonMLG)
 help(WAP)
-help(GibbsNormalGAU)
 help(BTransform)
 ```
