@@ -15,6 +15,7 @@ GibbsNormalGAU(
   taus2 = NA,
   Hphib2 = NA,
   sig2xi = NA,
+  sig2beta2 = NA,
   printevery = 100
 )
 }
