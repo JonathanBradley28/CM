@@ -30,8 +30,101 @@ BTransform(
 \item{nslice}{The burnin for the slice sampler}
 }
 \value{
-ans A list of updated parameter values.
+output A list of updated parameter values.
 }
 \description{
-This code posterior replicates from the transformation model described in Bradley et al. (2020).
+This code produces posterior replicates from the transformation model described in Bradley (2020).
+}
+\examples{
+library(CM)
+
+Xu = matrix(runif(10*1000),1000,9)
+Xt = Xu
+Xt[,1] = sin(pi*Xu[,1]*Xu[,2])
+Xt[,2] = (X[,3] - 0.5)^2
+beta = as.matrix(c(10,20,10,5,0,0,0,0,0),10,1)
+f<-Xt\%*\%beta
+
+Xmat = as.matrix(cbind(Xt[,1],Xt[,3:9]))
+Xmat1 = cbind(Xmat[1:350,],matrix(0,350,18))
+Xmat2 = cbind(matrix(0,350,9),Xmat[351:700,],matrix(0,350,9))
+Xmat3 = cbind(matrix(0,300,18),Xmat[701:1000,])
+
+Xmat = rbind(Xmat1,Xmat2,Xmat3)
+
+X1=matrix(1,1000,1)
+X2=matrix(0,1000,1)
+X3=matrix(0,1000,1)
+X2[351:700]=1
+X3[701:1000]=1
+
+Xmat = cbind(X1,X2,X3,Xmat)
+
+N=1000
+r = 500
+A = matrix(0,N,N)
+A[1:(N-1),2:N] = diag(N-1)
+A = A+t(A)
+MI = (diag(N)-Xmat\%*\%ginv(t(Xmat)\%*\%Xmat)\%*\%t(Xmat))\%*\%A\%*\%(diag(N)-Xmat\%*\%ginv(t(Xmat)\%*\%Xmat)\%*\%t(Xmat))
+output<-eigen(MI)
+Psi=Re(output$vectors[,1:r])
+
+y = f[1:350] + rnorm(350)
+y2 = rpois(350,(f[351:700]))
+y3= rbinom(300, 31, (f[701:1000])/31)
+
+outCM<-BTransform(2000,y,y2,y3,matrix(31,300,1))
+
+response = rbind(outCM$xi1,outCM$xi2,outCM$xi3)
+## Fit the preferred model
+
+etadiscrip = matrix(0,r,2000)
+betadiscrip = matrix(0,29,2000)
+xidiscrip=matrix(0,1000,2000)
+
+  outLGP=GibbsNormalGAU(2,Xmat,Psi,(response[,1]),matrix(0,r,1),matrix(0,29,1),matrix(0,1000,1),1,diag(r),1,1)
+  betadiscrip[,1]=outLGP[[1]][,2]
+  etadiscrip[,1]=outLGP[[2]][,2]
+  xidiscrip[,1]=outLGP[[3]][,2]
+
+  for (j in 2:2000){
+    outLGP=GibbsNormalGAU(2,Xmat,Psi,response[,j],etadiscrip[,j-1],betadiscrip[j-1],xidiscrip[,j-1],outLGP[[4]][2],outLGP[[5]][2]*diag(r),outLGP[[6]][2],outLGP[[7]][2])
+    betadiscrip[,j]=outLGP[[1]][,2]
+    etadiscrip[,j]=outLGP[[2]][,2]
+    xidiscrip[,j]=outLGP[[3]][,2]
+    if (j\%\%100==0){
+      print(j)
+    }
+  }
+
+
+  yhat2=Xmat\%*\%betadiscrip[,500:1000]+Psi\%*\%etadiscrip[,500:1000]+xidiscrip[,500:1000]
+
+  #countinuous predictions with truth
+  f_est=apply(yhat2[1:350,],1,mean)
+  f_lower= apply(yhat2[1:350,],1,quantile,0.025)
+  f_upper= apply(yhat2[1:350,],1,quantile,0.975)
+
+  #plot estimates and truth
+  plot(f_est,f[1:350],ylim = c(0,max(f[1:350])+1))
+  abline(0,1)
+
+  #Poisson count predictions with truth
+f_est=apply(exp(yhat2[351:700,]),1,median)
+f_lower= apply(exp(yhat2[351:700,]),1,quantile,0.025)
+  f_upper= apply(exp(yhat2[351:700,]),1,quantile,0.975)
+
+  #plot estimates and truth
+  plot(f_est,f[351:700,],ylim = c(0,max(f[351:700,])+1))
+  abline(0,1)
+
+ #Binomial count predictions with truth
+  f_est=31*apply(exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,median)
+  f_lower= apply(31*exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,quantile,0.025)
+  f_upper= apply(31*exp(yhat2[701:1000,])/(1+exp(yhat2[701:1000,])),1,quantile,0.975)
+
+   #plot estimates and truth
+ plot(f_est,f[701:1000],ylim = c(0,max(f_est)+1))
+ abline(0,1)
+ @export
 }
