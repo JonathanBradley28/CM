@@ -185,7 +185,7 @@ if (is.null(data_continuous)==FALSE){
 
     #update shape xi using slice sampler
     for (iv in 1:n1){
-vvv[iv] = rigamma(1,0.5+n1/2,0.5+(xi1.gibbs[iv,b]^2)/2)
+vvv[iv] = rigamma(1,0.5+n1/2,0.5+((data_continuous[iv]-xi1.gibbs[iv,b])^2)/2)
 }
 
 }
