@@ -15,7 +15,7 @@ Hu, G, Bradley, JR. (2018). A Bayesian Spatio-Temporal Model for Analyzing Earth
 
 Xu, Z,  Bradley, JR, Sinha, D. (2019) Latent Multivariate Log-Gamma Models for High-Dimensional Multi-Type Survival Data with Application to Cancer Mapping. *arXiv: 1909.02528*.
 
-Bradley, JR (2020) Bayesian analysis of count-valued, binary-valued, and continuous-valued responses using unknown transformations. *arXiv:2002.09983*
+Bradley,  JR,  (2021+). Joint Bayesian Analysis of Multiple Response-Types Using the Hierarchical Generalized Transformation Model. Bayesian Analysis.
 
 # Installation
 ```
